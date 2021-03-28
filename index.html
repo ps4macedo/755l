@@ -262,15 +262,15 @@ input{
 		function done(){
 			document.getElementById("myProgress").remove();
 			document.getElementById("progress").innerHTML="Injetando GoldHen... Por favor, <font color=\"#ee596f\">AGUARDE!!!</font>";
-			preloadScripts(['oldjb.js', 'preloader.js', 'goldhen.js', 'loader.js']);
+			preloadScripts(['preloader.js', 'goldhen.js', 'loader.js']);
 			if(window.postPayload)
 				window.postPayload();
-			setTimeout(function(){document.getElementById("progress").innerHTML="<font size="6" color=\"#ee596f\"><b>GoldHen injetada com SUCESSO!!!</b></font><br><br>Boa diversão!<br><br><br>Obs.: <font color=\"#ee596f\">Modo Repouso funcionando</font>."; }, 7000);	
+			setTimeout(function(){document.getElementById("progress").innerHTML="<font color=\"#ee596f\"><b>GoldHen injetada com sucesso!</b></font><br><br>Boa diversão!"; }, 7000);	
 		}
 		
 		window.midExploit = function()
 		{
-			preloadScripts(['exploit.js']);
+			preloadScripts(['exploit.js', 'oldjb.js']);
 		}
 
 		window.postExploit = function()
@@ -297,7 +297,7 @@ input{
 		<script src="utils.js"></script>
 		<script src="int64.js"></script>
 		<script src="ps4.js"></script><br>
-		<h1 style='font-size:27px;text-align:center;'><u><font color="#49c179">PS4MACEDO EXPLOIT 7.5x LIGHT</font></u></h1><br><br><br>
+		<h1 style="font-size:32px;text-align:center;"><u><font color="#49c179">PS4MACEDO EXPLOIT 7.5x LIGHT</font></u></h1><br><br><br>
 		<h1 id="progress" class="titlehead">Carregando... Por favor, <font color="#ee596f">espere!!!</font></h1>
 		<button style="opacity:0" id="input1" onfocus="handle2()"></button>
 		<button style="opacity:0" id="input2"></button>
