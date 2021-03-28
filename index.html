@@ -262,7 +262,7 @@ input{
 		function done(){
 			document.getElementById("myProgress").remove();
 			document.getElementById("progress").innerHTML="Injetando GoldHen... Por favor, <font color=\"#ee596f\">AGUARDE!!!</font>";
-			preloadScripts(['preloader.js', 'goldhen.js', 'loader.js']);
+			preloadScripts(['oldjb.js', 'preloader.js', 'goldhen.js', 'loader.js']);
 			if(window.postPayload)
 				window.postPayload();
 			setTimeout(function(){document.getElementById("progress").innerHTML="<font size="6" color=\"#ee596f\"><b>GoldHen injetada com SUCESSO!!!</b></font><br><br>Boa diversão!<br><br><br>Obs.: <font color=\"#ee596f\">Modo Repouso funcionando</font>."; }, 7000);	
@@ -270,7 +270,7 @@ input{
 		
 		window.midExploit = function()
 		{
-			preloadScripts(['exploit.js', 'oldjb.js']);
+			preloadScripts(['exploit.js']);
 		}
 
 		window.postExploit = function()
