@@ -225,7 +225,7 @@ input{
 			if(window.applicationCache.status==2){localStorage.is75XV2Cached=true;}
 			window.applicationCache.ondownloading=function(){document.getElementById("progress").innerHTML="Instalando Cache Offline... <font color=\"#ee596f\"> Aguarde!!!</font>";localStorage.is75XV2Cached=false;};
 			window.applicationCache.onprogress=function(a){document.getElementById("myBar").style.width=(Math.round(100*(a.loaded/a.total)))+"%";document.getElementById("myBar").innerHTML=(Math.round(100*(a.loaded/a.total)))+"%";};
-			window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Cache <font color=\"#ee596f\">instalada</font> com sucesso!!!";localStorage.is75XV2Cached=true;setTimeout(function(){document.getElementById("progress").innerHTML="Saia com o CIRCULO, desabilite a REDE, <font color=\"#ee596f\">reinicie o console</font>, ative o THE PLAYROOM e RETORNE ao navegador."; }, 2600);};
+			window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Cache <font color=\"#ee596f\" size=\"16px\">instalada</font> com sucesso!!!";localStorage.is75XV2Cached=true;setTimeout(function(){document.getElementById("progress").innerHTML="Saia com o CIRCULO, desabilite a REDE, <font color=\"#ee596f\">REINICIE O PS4</font>, ative o THE PLAYROOM e retorne ao navegador."; }, 2600);};
 		</script>
 		<script>
 			var width = 0;
