@@ -177,7 +177,7 @@ input{
 
 
 		.bg {
-			background-color:white;
+			background-color:#000024;
 			background-image:url(bg1.png);
 			background-attachment: fixed;
 			background-size:100%;
@@ -216,16 +216,14 @@ input{
 .pointer {cursor: pointer;}
 </style>
 <head>
-	<title>PS4MACEDO 7.55 LIGHT v5 (JB Sleirsgoevy versão de 20/05/2021)</title>
+	<title>PS4MACEDO 7.55 LIGHT v7 (JB de 03/06/2021)</title>
 </head>
 	<body onload="go()" class="bg">
 		<script>
-			if(localStorage.jb==null){localStorage.jb='jb.js';}
-			var fw = (navigator.userAgent.substring(navigator.userAgent.indexOf('5.0 (') + 19, navigator.userAgent.indexOf(') Apple'))).replace('.', '');;
 			if(window.applicationCache.status==2){localStorage.is75XV2Cached=true;}
 			window.applicationCache.ondownloading=function(){document.getElementById("progress").innerHTML="Instalando Cache Offline... <font color=\"#ee596f\"> Aguarde!!!</font>";localStorage.is75XV2Cached=false;};
 			window.applicationCache.onprogress=function(a){document.getElementById("myBar").style.width=(Math.round(100*(a.loaded/a.total)))+"%";document.getElementById("myBar").innerHTML=(Math.round(100*(a.loaded/a.total)))+"%";};
-			window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Cache <font color=\"#ee596f\">instalada</font> com sucesso!!!";localStorage.is75XV2Cached=true;setTimeout(function(){document.getElementById("progress").innerHTML="<font size=\"5\">Saia com o CIRCULO, desabilite a REDE, <font color=\"#ee596f\"size=\"6\">REINICIE O PS4</font>, ative o THE PLAYROOM e retorne a WEB.</font>"; }, 2600);};
+			window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Cache <font color=\"#ee596f\">instalada</font> com sucesso!!!";localStorage.is75XV2Cached=true;setTimeout(function(){document.getElementById("progress").innerHTML="Saia com o CIRCULO, <font color=\"#ee596f\">desabilite a INTERNET</font> e retorne ao NAVEGADOR."; }, 2600);};
 		</script>
 		<script>
 			var width = 0;
@@ -261,11 +259,11 @@ input{
 		
 		function done(){
 			document.getElementById("myProgress").remove();
-			document.getElementById("progress").innerHTML="Exploração do kernel concluída!!! Agora injetando GoldHen... Por favor, <font color=\"#ee596f\">AGUARDE!!!</font>";
+			document.getElementById("progress").innerHTML="Exploração do kernel concluída!!! Agora injetando GoldHen v1.1.... Por favor, <font color=\"#ee596f\">AGUARDE!!!</font>";
 			preloadScripts(['preloader.js', 'goldhen.js', 'loader.js']);
 			if(window.postPayload)
 				window.postPayload();
-			setTimeout(function(){document.getElementById("progress").innerHTML="<br><font color=\"#ee596f\"><b>GoldHen versão 1.0 injetado com sucesso!</b></font><br><br><br>B o a&nbsp&nbsp&nbspd i v e r s ã o ! ! !"; }, 7000);	
+			setTimeout(function(){document.getElementById("progress").innerHTML="<br><font color=\"#ee596f\"><b>GoldHen versão 1.1 injetado com sucesso!</b></font><br><br><br>B o a&nbsp&nbsp&nbspd i v e r s ã o ! ! !"; }, 7000);	
 		}
 		
 		window.midExploit = function()
@@ -296,8 +294,7 @@ input{
 		</script>
 		<script src="utils.js"></script>
 		<script src="int64.js"></script>
-		<script src="ps4.js"></script><br>
-		<h1 style="font-size:32px;text-align:center;"><u><font color="#49c179">PS4MACEDO EXPLOIT 7.55 LIGHT v4</font></u></h1><br><br><br>
+		<script src="ps4.js"></script><br><br><br><br><br><br><br><br>
 		<h1 id="progress" class="titlehead">Carregando... Por favor, <font color="#ee596f">espere!!!</font></h1>
 		<button style="opacity:0" id="input1" onfocus="handle2()"></button>
 		<button style="opacity:0" id="input2"></button>
